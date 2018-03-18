@@ -1,18 +1,39 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import EmployeeListContainer from './components/EmployeeListContainer'
+import EmployeeDisplayContainer from './components/EmployeeDisplayContainer'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      displayEmployee: false,
+    };
+  }
+  handleClick = (childProps) => {
+    console.log("we got clicked!")
+    this.setState({employeeCard: childProps, displayEmployee: true})
+  }
+
+  renderEmployeeDetail() {
+    if (this.state.displayEmployee) {
+      return(
+        <EmployeeDisplayContainer employeeCard={this.state.employeeCard} />
+      )
+    }
+    return (
+    <div className="employeemain">Click any name to see its place in the chart.</div>
+    )
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div className="employeenav">
+          <h1>Testing stuff</h1>
+          <EmployeeListContainer parentFunc={this.handleClick}/>
+        </div>
+        { this.renderEmployeeDetail() }
       </div>
     );
   }

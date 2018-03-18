@@ -1,14 +1,7 @@
 .App {
-  text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
+.App-list {
   height: 150px;
   padding: 20px;
   color: white;
@@ -22,7 +15,32 @@
   font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.employeenav {
+    background-color: #F8F8F8;
+    float: left;
+    width: 37%;
+    height: 100vh;
+    padding: 15px;
+    overflow: auto;
+}
+
+.employeenav ul {
+    list-style-type: none;
+    margin-left: .4em;
+    padding: 0; 
+}
+
+.employeenav_person:hover {
+    background-color: lightblue;
+}
+
+.employeemain {
+  text-align: center;
+  padding: 15px;
+}
+
+@media screen and (max-width:600px) {
+    .employeenav {
+        width: 100%;
+    }
 }
