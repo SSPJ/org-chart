@@ -1,10 +1,8 @@
 module Api::V1
   class EmployeesController < ApplicationController
     def index
-      @emp = {id:1, name: "Dade Murphy","title":"CEO",direct_reports: [{id:2,name:"Kate Libby",position:"CTO",direct_reports: []},{id:3,name:"Edward Vedder",position:"CFO",direct_reports: []},{id:4,name:"Margo",position:"VP of Public Relations",direct_reports: []}]}
-      logger.debug @emp.inspect
-      logger.debug @emp.to_json
-      logger.fatal "testing"
+      @emp = [{id:1, name: "Dade\u00a0Murphy","position":"CEO",direct_reports: [{id:2,name:"Kate\u00a0Libby",position:"CTO",direct_reports: []},{id:3,name:"Edward\u00a0Vedder",position:"CFO",direct_reports: []},{id:4,name:"Margo",position:"VP\u00a0of\u00a0Public\u00a0Relations",direct_reports: []}]}]
+      #@emp = Employee.all
       render json: @emp, formats: :json
     end
 
