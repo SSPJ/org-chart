@@ -1,10 +1,8 @@
 .App {
-  //position: relative;
 }
 
 .employeenav {
   background-color: #F8F8F8;
-  //position: absolute;
   float: left;
   left: 0;
   width: 40%;
@@ -13,16 +11,24 @@
   overflow: visible;
 }
 
+.employeenav input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .employeenav ul {
   list-style-type: none;
-  margin-left: .5em;
-  padding-top: .3em;
+  margin-left: .6em;
   padding-left: 0;
   padding-right: 0;
 }
 
+.employeenav li {
+  padding-top: .3em;
+}
+
 .employeenav_person:hover {
-  background-color: lightblue;
+  background-color: #A8DFF7;
 }
 
 .employeemain {
@@ -33,42 +39,70 @@
 }
 
 .employeemain_tile-person {
-  //display: flex;
-  //justify-content: center;
-  //align-items: center;
-  min-height: 100px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: #A4DE69;
+  border: .3em solid #994EA1;
+  min-height: 80px;
   width: 150px;
-  margin: 0 auto;
-  background: lightblue;
+  margin: 20px auto 10px auto;
+  padding: .5em 0;
 }
 
-.employeemain_tile-person h4 {
-  padding-top: 10px;
+.employeemain_tile-person > p {
+  margin: .5em 0;
 }
 
 .employeemain_tile-superior {
-  min-height: 100px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: #81C041;
+  min-height: 50px;
   width: 150px;
   margin: 0 auto;
-  background: pink;
+  padding: .5em 0;
 }
 
-.employeemain_tile-superior h4 {
-  padding-top: 10px;
+.employeemain_tile-superior > p {
+  margin: .5em 0;
 }
 
 .employeemain_tile-underling {
+  background: #C3EE98;
   display: inline-block;
   vertical-align: top;
-  min-height: 100px;
+  min-height: 50px;
   width: 150px;
   margin: 10px;
-  background: lightyellow;
+  padding: .5em 0;
+}
+
+.employeemain_tile-underling > p {
+  margin: .5em 0;
 }
 
 @media screen and (max-width:600px) {
+  .App {
+    display: table;
+  }
+
   .employeenav {
+    display: table-footer-group;
+    float: none;
+    min-height: 0;
     width: 100%;
-    height: auto;
+  }
+
+  .employeenav ul {
+    margin-left: .5em;
+    padding-top: .3em;
+  }
+
+  .employeemain {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
   }
 }

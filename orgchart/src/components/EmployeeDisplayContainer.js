@@ -9,12 +9,12 @@ export default class EmployeeDisplayContainer extends Component {
       <section className="employeemain">
         {hasSuperior &&
           <div className="employeemain_tile-superior" key={this.props.employeeCard.superior.id}>
-            <h4>{this.props.employeeCard.superior.position}</h4>
+            <p><b>{this.props.employeeCard.superior.position}</b></p>
             <p>{this.props.employeeCard.superior.name}</p>
           </div>
         }
         <div className="employeemain_tile-person" key={this.props.employeeCard.id}>
-          <h4>{this.props.employeeCard.position}</h4>
+          <p><b>{this.props.employeeCard.position}</b></p>
           <p>{this.props.employeeCard.name}</p>
         </div>
         {hasUnderlings &&
@@ -22,7 +22,7 @@ export default class EmployeeDisplayContainer extends Component {
             return (
             <div className="employeemain_tile-underling" key={report.id}>
               <p>{report.name}</p>
-              <h4>{report.position}</h4>
+              <p><b>{report.position}</b></p>
             </div>
             )
           })

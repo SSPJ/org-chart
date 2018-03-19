@@ -8,7 +8,7 @@ export default class EmployeeListContainer extends Component {
     super(props)
     this.state = {
       loading: true,
-      queryString: ""
+      queryString: undefined
     };
   }
   componentDidMount() {
@@ -38,16 +38,27 @@ export default class EmployeeListContainer extends Component {
                                        position: person.direct_reports[i].position});
         }
       }
+      if (this.state.queryString) {
+        var skip = person.name.toLowerCase().indexOf(this.state.queryString) == -1 &&
+                   person.position.toLowerCase().indexOf(this.state.queryString) == -1;
+      }
       console.log(JSON.stringify(direct_reports_detail))
-      return <EmployeeListEntry key={ person.id }
-        updateDisplayContainer={ this.props.updateDisplayContainer }
-        position={ person.position }
-        name={ person.name }
-        superior={ boss }
-        direct_reports={ direct_reports_detail }>
-        { renderUnderlings(person.direct_reports,person) }
-      </EmployeeListEntry>
+      return ( skip ? (
+          <li>{ renderUnderlings(person.direct_reports,person) }</li>
+        ) : (
+        <EmployeeListEntry key={ person.id }
+          updateDisplayContainer={ this.props.updateDisplayContainer }
+          position={ person.position }
+          name={ person.name }
+          superior={ boss }
+          direct_reports={ direct_reports_detail }>
+          { renderUnderlings(person.direct_reports,person) }
+        </EmployeeListEntry>
+      ))
     });
+  }
+  filterList = (e) => {
+    this.setState({queryString: e.target.value})
   }
   render() {
     if (this.state.loading) {
@@ -56,7 +67,7 @@ export default class EmployeeListContainer extends Component {
     console.log("Rendering main employee list. . .");
     return (
     <section className="employeenav">
-      <input type="search" placeholder="Search" onChange={this.onChange} />
+      <input type="search" placeholder="Search" onChange={this.filterList} />
       <ul>
       { this.renderEmployeeList(this.state.employees) }
       </ul>
