@@ -1,46 +1,74 @@
 .App {
-}
-
-.App-list {
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
+  //position: relative;
 }
 
 .employeenav {
-    background-color: #F8F8F8;
-    float: left;
-    width: 37%;
-    height: 100vh;
-    padding: 15px;
-    overflow: auto;
+  background-color: #F8F8F8;
+  //position: absolute;
+  float: left;
+  left: 0;
+  width: 40%;
+  min-height: 100vh;
+  padding: 15px;
+  overflow: visible;
 }
 
 .employeenav ul {
-    list-style-type: none;
-    margin-left: .4em;
-    padding: 0; 
+  list-style-type: none;
+  margin-left: .5em;
+  padding-top: .3em;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .employeenav_person:hover {
-    background-color: lightblue;
+  background-color: lightblue;
 }
 
 .employeemain {
   text-align: center;
+  align-content: center;
+  margin-left: 50%;
   padding: 15px;
 }
 
+.employeemain_tile-person {
+  //display: flex;
+  //justify-content: center;
+  //align-items: center;
+  min-height: 100px;
+  width: 150px;
+  margin: 0 auto;
+  background: lightblue;
+}
+
+.employeemain_tile-person h4 {
+  padding-top: 10px;
+}
+
+.employeemain_tile-superior {
+  min-height: 100px;
+  width: 150px;
+  margin: 0 auto;
+  background: pink;
+}
+
+.employeemain_tile-superior h4 {
+  padding-top: 10px;
+}
+
+.employeemain_tile-underling {
+  display: inline-block;
+  vertical-align: top;
+  min-height: 100px;
+  width: 150px;
+  margin: 10px;
+  background: lightyellow;
+}
+
 @media screen and (max-width:600px) {
-    .employeenav {
-        width: 100%;
-    }
+  .employeenav {
+    width: 100%;
+    height: auto;
+  }
 }

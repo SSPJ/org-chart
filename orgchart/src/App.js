@@ -10,8 +10,8 @@ class App extends Component {
       displayEmployee: false,
     };
   }
-  handleClick = (childProps) => {
-    console.log("we got clicked!")
+  updateDisplayContainer = (childProps) => {
+    //console.log("we got clicked!")
     this.setState({employeeCard: childProps, displayEmployee: true})
   }
 
@@ -29,10 +29,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="employeenav">
-          <h1>Testing stuff</h1>
-          <EmployeeListContainer parentFunc={this.handleClick}/>
-        </div>
+        <EmployeeListContainer updateDisplayContainer={this.updateDisplayContainer}/>
         { this.renderEmployeeDetail() }
       </div>
     );

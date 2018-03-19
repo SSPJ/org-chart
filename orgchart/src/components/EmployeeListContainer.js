@@ -8,6 +8,7 @@ export default class EmployeeListContainer extends Component {
     super(props)
     this.state = {
       loading: true,
+      queryString: ""
     };
   }
   componentDidMount() {
@@ -25,15 +26,25 @@ export default class EmployeeListContainer extends Component {
       }
     }
     return employees.map((person) => {
-      console.log("In renderEmployeeList(employees) with:");
-      console.log(JSON.stringify(person));
-      console.log("and direct_reports of:");
-      console.log(JSON.stringify(person.direct_reports));
+      //console.log("In renderEmployeeList(employees) with:");
+      //console.log(JSON.stringify(person));
+      //console.log("and direct_reports of:");
+      //console.log(JSON.stringify(person.direct_reports));
+      var direct_reports_detail = [];
+      if (person.direct_reports.length > 0) {
+        for (var i = 0; i < person.direct_reports.length; i++) {
+           direct_reports_detail.push({id: person.direct_reports[i].id,
+                                       name: person.direct_reports[i].name,
+                                       position: person.direct_reports[i].position});
+        }
+      }
+      console.log(JSON.stringify(direct_reports_detail))
       return <EmployeeListEntry key={ person.id }
-        clickable={ this.props.parentFunc }
+        updateDisplayContainer={ this.props.updateDisplayContainer }
         position={ person.position }
         name={ person.name }
-        superior={ boss }>
+        superior={ boss }
+        direct_reports={ direct_reports_detail }>
         { renderUnderlings(person.direct_reports,person) }
       </EmployeeListEntry>
     });
@@ -44,15 +55,16 @@ export default class EmployeeListContainer extends Component {
     }
     console.log("Rendering main employee list. . .");
     return (
-    <div>
+    <section className="employeenav">
+      <input type="search" placeholder="Search" onChange={this.onChange} />
       <ul>
       { this.renderEmployeeList(this.state.employees) }
       </ul>
-    </div>
+    </section>
     )
   }
 }
 
 EmployeeListContainer.propTypes = {
-  parentFunc: PropTypes.func,
+  updateDisplayContainer: PropTypes.func,
 };

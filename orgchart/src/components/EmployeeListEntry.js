@@ -8,8 +8,8 @@ export default class EmployeeListEntry extends Component {
     return (
       <li>
         <div className="employeenav_person"
-          onClick={this.props.clickable.bind(this,this.props)}>
-        <b>{ this.props.position }</b>&nbsp;-&nbsp;{ this.props.name }
+          onClick={this.props.updateDisplayContainer.bind(this,this.props)}>
+        { this.props.name }
         </div>
         { this.props.children }
       </li>
