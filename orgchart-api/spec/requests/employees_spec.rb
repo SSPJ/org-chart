@@ -1,19 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe 'Employees API', type: :request do
-  # initialize test data 
-  let!(:employees) { create_list(:employee, 10) }
-  let(:employee_id) { employees.first.id }
+  before(:all) do
+    $example_employee_id = 5
+    $example_employee_manager_id = 2
+    $example_subordinate_id = 7
+  end
 
-  # Test suite for GET /api/v1/employees
   describe 'GET /api/v1/employees' do
-    # make HTTP get request before each example
-    before { get '/api/v1/employees' }
+    before { get "/api/v1/employees" }
 
     it 'returns employees' do
-      # Note `json` is a custom helper to parse JSON responses
-      expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      json_parsed = JSON.parse(response.body)
+      expect(json_parsed).not_to be_empty
+      expect(json_parsed.size).to eq(1)
     end
 
     it 'returns status code 200' do
@@ -21,14 +21,13 @@ RSpec.describe 'Employees API', type: :request do
     end
   end
 
-  # Test suite for GET /api/v1/employees/:id
   describe 'GET /api/v1/employees/:id' do
-    before { get "/api/v1/employees/#{employee_id}" }
-
-    context 'when the record exists' do
+    context 'when the employee exists' do
+      before { get "/api/v1/employees/#{$example_employee_id}" }
       it 'returns the employee' do
-        expect(json).not_to be_empty
-        expect(json['id']).to eq(employee_id)
+        json_parsed = JSON.parse(response.body)
+        expect(json_parsed).not_to be_empty
+        expect(json_parsed['id']).to eq($example_employee_id)
       end
 
       it 'returns status code 200' do
@@ -36,29 +35,39 @@ RSpec.describe 'Employees API', type: :request do
       end
     end
 
-    context 'when the record does not exist' do
-      let(:employee_id) { 100 }
-
+    context 'when the employee does not exist' do
+      before { get "/api/v1/employees/700" }
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
+    end
 
-      it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Todo/)
+    context 'when employee and subordinates are requested' do
+      before { get "/api/v1/employees/#{$example_employee_id}?all" }
+      it 'returns the employee with subordinates' do
+        json_parsed = JSON.parse(response.body)
+        expect(json_parsed[0]['direct_reports']).not_to be_empty
       end
     end
   end
 
-  # Test suite for POST /api/v1/employees
   describe 'POST /api/v1/employees' do
-    # valid payload
-    let(:valid_attributes) { { title: 'Learn Elm', created_by: '1' } }
+    before do
+      DatabaseCleaner.start
+    end
+
+    let(:new_employee) { { first_name: 'Susan', last_name: 'Edwards',
+      title: 'Airplane Mechanic', manager_id: $example_employee_id } }
+    let(:new_employee_no_manager_id) { { first_name: 'Susan', last_name: 'Edwards',
+      title: 'Airplane Mechanic' } }
+    let(:new_employee_no_last_name) { { first_name: 'Susan',
+      title: 'Airplane Mechanic', manager_id: $example_employee_id } }
 
     context 'when the request is valid' do
-      before { post '/api/v1/employees', params: valid_attributes }
+      before { post '/api/v1/employees', params: new_employee }
 
-      it 'creates a employee' do
-        expect(json['title']).to eq('Learn Elm')
+      it 'creates an employee' do
+        expect(JSON.parse(response.body)['title']).to eq('Airplane Mechanic')
       end
 
       it 'returns status code 201' do
@@ -66,43 +75,82 @@ RSpec.describe 'Employees API', type: :request do
       end
     end
 
-    context 'when the request is invalid' do
-      before { post '/api/v1/employees', params: { title: 'Foobar' } }
-
+    context 'when the employee has no last name' do
+      before { post '/api/v1/employees', params: new_employee_no_last_name }
+    
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
-
-      it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Created by can't be blank/)
+    end
+    
+    context 'when the employee has no manager id' do
+      before { post '/api/v1/employees', params: new_employee_no_manager_id }
+    
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
       end
+    end
+
+    after do
+      DatabaseCleaner.clean
     end
   end
 
-  # Test suite for PUT /api/v1/employees/:id
   describe 'PUT /api/v1/employees/:id' do
-    let(:valid_attributes) { { title: 'Shopping' } }
+    before do
+      DatabaseCleaner.start
+    end
 
-    context 'when the record exists' do
-      before { put "/api/v1/employees/#{employee_id}", params: valid_attributes }
+    let(:updated_employee) { { first_name: 'Anthony', last_name: 'Box',
+      manager_id: $example_employee_id } }
 
-      it 'updates the record' do
-        expect(response.body).to be_empty
+    context 'when the employee exists' do
+      before { put "/api/v1/employees/#{$example_employee_id}", params: updated_employee }
+
+      it 'updates the employee' do
+        expect(response.body).not_to be_empty
+        expect(JSON.parse(response.body)['last_name']).to eq('Box')
       end
 
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
+    end
+
+    context 'when the employee does not exist' do
+      before { put "/api/v1/employees/700" }
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    after do
+      DatabaseCleaner.clean
     end
   end
 
-  # Test suite for DELETE /api/v1/employees/:id
   describe 'DELETE /api/v1/employees/:id' do
-    before { delete "/api/v1/employees/#{employee_id}" }
+    before do
+      DatabaseCleaner.start
+      delete "/api/v1/employees/#{$example_employee_id}"
+    end
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
+    end
+
+    it 'should really delete' do
+      get "/api/v1/employees/#{$example_employee_id}"
+      expect(response).to have_http_status(404)
+    end
+
+    it 'reassigns subordinate employees' do
+      get "/api/v1/employees/#{$example_subordinate_id}"
+      expect(JSON.parse(response.body)['manager_id']).to eq($example_employee_manager_id)
+    end
+
+    after do
+      DatabaseCleaner.clean
     end
   end
 end

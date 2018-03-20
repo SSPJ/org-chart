@@ -1,43 +1,70 @@
 module Api::V1
   class EmployeesController < ApplicationController
+
+    rescue_from ActiveRecord::RecordNotFound do |exception|
+      head :not_found
+    end
+
+    ##
+    # Returns a nested hash of employee organizational chart.
+    def nestJSON(r)
+      {
+        id: r.id,
+        name: r.first_name ? "#{r.first_name} #{r.last_name}" : r.last_name,
+        position: r.title,
+        direct_reports: r.underlings.empty? ? [] : r.underlings.map { |u| nestJSON(u) }
+      }
+    end
+
     def index
-      @emp = [{id:1, name: "Dade\u00a0Murphy","position":"CEO",direct_reports: [{id:2,name:"Kate\u00a0Libby",position:"CTO",direct_reports: []},{id:3,name:"Edward\u00a0Vedder",position:"CFO",direct_reports: []},{id:4,name:"Margo",position:"VP\u00a0of\u00a0Public\u00a0Relations",direct_reports: []}]}]
-      #@emp = Employee.all
-      render json: @emp, formats: :json
+      @emp = [nestJSON(Employee.includes(:underlings).find_by manager_id: nil)]
+      render json: @emp
     end
 
     def show
-    end
-
-    def new
-    end
-
-    def edit
+      if params.has_key? :all
+        @emp = [nestJSON(Employee.includes(:underlings).find(params[:id]))]
+      else
+        @emp = Employee.find(params[:id])
+      end
+      render json: @emp
     end
 
     def create
-      @employee = Employee.create(employee_params)
-      render json: @employee
+      unless params.has_key? :manager_id and params.has_key? :last_name
+        head :unprocessable_entity and return
+      end
+      @emp = Employee.create(employee_params)
+      render json: @emp, status: :created
     end
 
     def update
-      @employee = Employee.find(params[:id])
-      @employee.update_attributes(employee_params)
-      render json: @employee
+      @emp = Employee.find(params[:id])
+      @emp.update_attributes(employee_params)
+      render json: @emp
     end
 
     def destroy
-      @employee = Employee.find(params[:id])
-      if @employee.destroy
+      @emp = Employee.find(params[:id])
+      unless @emp.underlings.empty?
+        if @emp.manager_id.nil?
+          head :unprocessable_entity and return
+        end
+        @emp.underlings.each do |u|
+          u.manager_id = @emp.manager_id
+          u.save
+        end
+      end
+      if @emp.destroy
         head :no_content, status: :ok
       else
-        render json: @employee.errors, status: :unprocessable_entity
+        render json: @emp.errors, status: :unprocessable_entity
       end
     end
 
     private
       def employee_params
-        params.require(:title,:first_name,:last_name).permit(:id,:manager_id)
+        params.permit(:title,:first_name,:last_name,:manager_id)
       end
   end
 end
