@@ -5,8 +5,8 @@ class CreateEmployees < ActiveRecord::Migration[5.1]
       t.string :last_name
       t.string :title
       t.integer :manager_id
-
-      t.timestamps
     end
+    add_index :employees, :manager_id
+    add_foreign_key :employees, :employees, column: :manager_id
   end
 end
