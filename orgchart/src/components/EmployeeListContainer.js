@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios'
 import EmployeeListEntry from './EmployeeListEntry'
 
+// Displays all employees in nested <ul>s
 export default class EmployeeListContainer extends Component {
   constructor(props) {
     super(props)
@@ -12,24 +13,22 @@ export default class EmployeeListContainer extends Component {
     };
   }
   componentDidMount() {
+    // Request employee data from Rails
     axios.get("http://localhost:3001/api/v1/employees.json")
     .then(response => {
-      console.log(response)
       this.setState({employees: response.data, loading: false})
     })
     .catch(error => console.log(error))
   }
   renderEmployeeList(employees,boss) {
+    // Recursive call to renderEmployeeList() for any subordinate employees
     const renderUnderlings = (underlings,superior) => {
       if (underlings.length > 0) {
         return <ul>{ this.renderEmployeeList(underlings,superior) }</ul>
       }
     }
     return employees.map((person) => {
-      //console.log("In renderEmployeeList(employees) with:");
-      //console.log(JSON.stringify(person));
-      //console.log("and direct_reports of:");
-      //console.log(JSON.stringify(person.direct_reports));
+      // Generate an array of subordinate details for rendering in EmployeeDisplayContainer
       var direct_reports_detail = [];
       if (person.direct_reports.length > 0) {
         for (var i = 0; i < person.direct_reports.length; i++) {
@@ -38,11 +37,11 @@ export default class EmployeeListContainer extends Component {
                                        position: person.direct_reports[i].position});
         }
       }
+      // Do not render any employees who don't match the queryString
       if (this.state.queryString) {
         var skip = person.name.toLowerCase().indexOf(this.state.queryString) == -1 &&
                    person.position.toLowerCase().indexOf(this.state.queryString) == -1;
       }
-      console.log(JSON.stringify(direct_reports_detail))
       return ( skip ? (
           <li>{ renderUnderlings(person.direct_reports,person) }</li>
         ) : (
@@ -57,14 +56,15 @@ export default class EmployeeListContainer extends Component {
       ))
     });
   }
+  // Update the queryString as a person types in the search box
   filterList = (e) => {
     this.setState({queryString: e.target.value})
   }
+  // Main render function
   render() {
     if (this.state.loading) {
       return <div>Loading. . . </div>
     }
-    console.log("Rendering main employee list. . .");
     return (
     <section className="employeenav">
       <input type="search" placeholder="Search" onChange={this.filterList} />

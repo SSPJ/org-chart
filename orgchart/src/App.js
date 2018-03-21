@@ -11,7 +11,7 @@ class App extends Component {
     };
   }
   updateDisplayContainer = (childProps) => {
-    //console.log("we got clicked!")
+    // childProps is obtained from EmployeeListEntry
     this.setState({employeeCard: childProps, displayEmployee: true})
   }
 
@@ -26,6 +26,8 @@ class App extends Component {
     )
   }
 
+  // EmployeeListContainer displays on the left with employees as nested list items
+  // EmployeeDisplayContainer displays on the right with the employee selected
   render() {
     return (
       <div className="App">

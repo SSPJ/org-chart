@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
+// Display the employee detail, plus superior and direct subordinates, if any
 export default class EmployeeDisplayContainer extends Component {
   render() {
-    console.log("Rendering main employee display. . .");
     const hasSuperior = (this.props.employeeCard.superior !==  undefined)
     const hasUnderlings = (this.props.employeeCard.direct_reports.length > 0)
     return (

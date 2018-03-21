@@ -34,6 +34,18 @@ module OrgchartApi
         origins 'http://localhost:3000'
         resource '*', :headers => :any, :methods => [:get, :post, :put, :delete, :options]
       end
+      allow do
+        origins 'http://localhost:5000'
+        resource '*', :headers => :any, :methods => [:get, :post, :put, :delete, :options]
+      end
+      allow do
+        origins 'http://localhost:80'
+        resource '*', :headers => :any, :methods => [:get, :post, :put, :delete, :options]
+      end
+      allow do
+        origins 'http://localhost:8080'
+        resource '*', :headers => :any, :methods => [:get, :post, :put, :delete, :options]
+      end
     end
   end
 end

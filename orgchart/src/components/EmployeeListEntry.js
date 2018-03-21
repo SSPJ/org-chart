@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 
+// Displays a single employee in the employee <ul>
 export default class EmployeeListEntry extends Component {
   render() {
-    console.log("Rendering item:");
-    console.log(JSON.stringify(this.props.name));
+    // onClick sends this employee's data to updateDisplayContainer() via EmployeeListContainer
     return (
       <li>
         <div className="employeenav_person"
