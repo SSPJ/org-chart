@@ -59,3 +59,4 @@ RAILS_ENV=test rails db:seed
 bundle exec rspec
 ```
 
+**Code ©2018, Seamus Johnston, all rights reserved except as required by upstream licenses**
